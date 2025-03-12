@@ -5,7 +5,7 @@ library(stringr)
 
 specification_dat = ###load study data with the variables used in the study
 
-## Set up the model to use in the specification analysis
+## Set up the model to use in the specification curve analysis
 log_glm <- function(formula, data) {
   glm(formula, data, family = binomial(link = "logit"))
 }
@@ -28,5 +28,5 @@ results$data = results$data %>%
   filter(!grepl("other", subsets, ignore.case = TRUE) & 
            !grepl("unknow", subsets, ignore.case = TRUE))
 
-## Generate the specification analysis curve
+## Generate the specification curve analysis
 plot(results)
