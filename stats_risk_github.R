@@ -5,8 +5,8 @@ library(readr)
 
 study_data <- ###load study data with the variables used in the study
   
-gee_fit_all = gee::gee(PASC.any ~ age_group_10years + sex_cd + race_group + 
-                         variant + charlson_index + hispanic  +severity, 
+gee_fit_all = gee::gee(PASC.any ~ age_group_10years + sex_cd + race_group + variant +
+                         charlson_index + I(charlson_index^2) + hispanic  +severity, 
                    data = gee.dat.no.organ , 
                    family = binomial(logit), 
                    corstr = "exchangeable",
@@ -28,6 +28,7 @@ gee_results_all$group <-c("Age groups by 10 years",
                       "Delta vs. Alpha",
                       "Omicron vs. Alpha",
                       "Charlson index",
+                      "Charlson index sqaured",
                       "Hispanic vs. Non-hispanic",
                       #"Fully vaccinated/Boosted vs. Not Fully vaccinated",
                       "Hospitalized vs. Non-hospitalized",
