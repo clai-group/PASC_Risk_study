@@ -11,9 +11,9 @@ log_glm <- function(formula, data) {
 }
 
 specs <- setup(data = specification_dat,
-               x = "age_group_10years",
+               x = "age_decade",
                y = "PASC",
-               controls = c("charlson_index","variant", "severity",  "Vaccination_status"),
+               controls = c("charlson_spline", "severity", "Vaccination_status", "yrqt_num"),
                model = "log_glm",
                subsets = list(sex_cd = c("Female", "Male"),
                               race = c("White","Black", "Asian", "Other", "Unknown"),

@@ -1,43 +1,61 @@
-library(dplyr)
-library(gee)
-library(readr)
+# GEE Model: Binary Outcome ~ Covariates
+# Correlation structure: exchangeable | Family: binomial
 
+library(geepack)   
+library(rms)      
+library(dplyr)    
 
 study_data <- ###load study data with the variables used in the study
   
-gee_fit_all = gee::gee(PASC.any ~ age_group_10years + sex_cd + race_group + variant +
-                         charlson_index + I(charlson_index^2) + hispanic  +severity, 
-                   data = gee.dat.no.organ , 
-                   family = binomial(logit), 
-                   corstr = "exchangeable",
-                   id = EMPI)
-summary_gee <- summary(gee_fit_all)
-gee_coef = coef(gee_fit_all)
-gee_or = round(exp(gee_coef),3)
-gee_sd <- summary_gee$coefficients[, "Robust S.E."]
-gee_LB <- round(exp(gee_coef - 1.96 * gee_sd),3)
-gee_UB <- round(exp(gee_coef + 1.96 * gee_sd),3)
-gee_results <- data.frame(OR = gee_or, 
-                          LB = gee_LB, 
-                          UB = gee_UB)
-gee_results_all = gee_results[-c(1,6,7,12),]
-gee_results_all$group <-c("Age groups by 10 years",
-                      "Male vs. Female",
-                      "Black vs. White",
-                      "Asian vs. White",
-                      "Delta vs. Alpha",
-                      "Omicron vs. Alpha",
-                      "Charlson index",
-                      "Charlson index sqaured",
-                      "Hispanic vs. Non-hispanic",
-                      #"Fully vaccinated/Boosted vs. Not Fully vaccinated",
-                      "Hospitalized vs. Non-hospitalized",
-                      "Icu/ventilation vs. Non-hospitalized")
-gee_results_all = gee_results_all %>% dplyr::select(group, OR, LB, UB)
-row.names(gee_results_all) = NULL
+# Model fit
+gee_fit <- geeglm(
+  PASC.any ~ age_decade +
+    sex_cd +
+    race_group +
+    vaccination_status_binary +
+    yrqt +
+    rcs(CHARLSON_INDEX, 4) +
+    hispanic +
+    severity,
+  data    = gee.dat.no.organ,
+  family  = binomial,
+  corstr  = "exchangeable",
+  id      = EMPI
+)
 
 
+# Extract coefficients and compute odds ratios with 95%  CIs
+coefs <- summary(gee_fit)$coefficients
+or_df <- data.frame(
+  Variable  = rownames(coefs),
+  OR        = exp(coefs[, "Estimate"]),
+  CI_lower  = exp(coefs[, "Estimate"] - 1.96 * coefs[, "Std.err"]),
+  CI_upper  = exp(coefs[, "Estimate"] + 1.96 * coefs[, "Std.err"]),
+  P_value   = coefs[, "Pr(>|W|)"]
+)
 
+# Drop intercept, spline terms, and reference-level rows
+or_df <- or_df[-c(1, 6, 7, 10:12, 14), ]
+
+# Assign readable labels
+or_df$group <- c(
+  "Age per-decade",
+  "Male vs. Female",
+  "Black vs. White",
+  "Asian vs. White",
+  "Vaccinated vs. Unvaccinated",
+  "Year-quarter",
+  "Hispanic vs. Non-hispanic",
+  "Hospitalized vs. Non-hospitalized",
+  "ICU/Ventilation vs. Non-hospitalized"
+)
+
+
+# Final results table
+gee_results <- or_df %>%
+  dplyr::select(group, OR, CI_lower, CI_upper, P_value)
+
+row.names(gee_results) <- NULL
 
 
 
