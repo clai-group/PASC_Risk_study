@@ -1,16 +1,13 @@
-# PASC Aging Study — Replication Code
+# PASC Aging Study 
 
 > **The age paradox in post-infectious sequelae: physiological reserve outweighs chronological age in Long COVID susceptibility**
 
-Replication code for the primary GEE model and specification curve robustness analysis.
-
----
 
 ## Repository contents
 
 | File | Description |
 |------|-------------|
-| `gee_analysis.R` | Primary GEE model — odds ratios with 95% Wald CIs |
+| `gee_analysis.R` | Primary GEE model |
 | `specification_curve.R` | Specification curve robustness analysis |
 | `simulate_demo_data.R` | Generates a synthetic dataset for code demonstration |
 | `LICENSE` | MIT License |
@@ -32,7 +29,7 @@ Tested on **R 4.4.0** (recommended ≥ 4.1.0). No non-standard hardware required
 | Package | Version tested | Purpose |
 |---------|---------------|---------|
 | `geepack` | 1.3.9 | `geeglm()` — generalized estimating equations |
-| `rms` | 6.7.x | `rcs()` — restricted cubic splines |
+| `rms` | 6.7.x | `rcs()` — restricted cubic splines when linearity assumption doesn't hold |
 | `specr` | 1.0.0 | Specification curve analysis |
 | `dplyr` | 1.1.x | Data manipulation |
 | `ggplot2` | 3.4.x | Plotting (used internally by `specr`) |
