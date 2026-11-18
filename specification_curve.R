@@ -3,7 +3,7 @@
 #
 # Consistent with the manuscript:
 #   - age modeled continuously per decade (the exposure), as in the primary model
-#   - adjustment covariates varied across specifications: Charlson spline,
+#   - adjustment covariates varied across specifications: Charlson natural spline (3 df),
 #     acute severity, vaccination status, and year-quarter
 #   - subsamples defined by sex, combined race/ethnicity, and three-level age group
 #   - the small "Other" and "Unknown" race/ethnicity subsamples are excluded
@@ -14,7 +14,7 @@
 #   plot(results)
 
 library(specr)
-library(rms)
+library(splines)
 library(dplyr)
 library(ggplot2)
 library(stringr)
@@ -22,6 +22,11 @@ library(stringr)
 if (!exists("specification_dat")) {
   stop("Assign your analysis-ready data frame to `specification_dat` before sourcing.")
 }
+
+## Covariates as named in the manuscript (Figure 4 labels)
+specification_dat$charlson_spline <- ns(specification_dat$CHARLSON_INDEX, df = 3)
+names(specification_dat)[names(specification_dat) == "PASC.any"] <- "PASC"
+names(specification_dat)[names(specification_dat) == "vaccination_status_binary"] <- "Vaccination_status"
 
 ## Logistic model used in each specification
 log_glm <- function(formula, data) {
@@ -31,9 +36,9 @@ log_glm <- function(formula, data) {
 specs <- setup(
   data     = specification_dat,
   x        = "age_decade",
-  y        = "PASC.any",
-  controls = c("rcs(CHARLSON_INDEX, 4)", "severity",
-               "vaccination_status_binary", "yrqt_num"),
+  y        = "PASC",
+  controls = c("charlson_spline", "severity",
+               "Vaccination_status", "yrqt_num"),
   model    = "log_glm",
   subsets  = list(
     sex_cd            = c("Female", "Male"),

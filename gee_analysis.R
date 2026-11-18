@@ -58,7 +58,7 @@ or_df <- data.frame(
   OR       = exp(coefs[, "Estimate"]),
   CI_lower = exp(coefs[, "Estimate"] - 1.96 * coefs[, "Std.err"]),
   CI_upper = exp(coefs[, "Estimate"] + 1.96 * coefs[, "Std.err"]),
-  P_value  = coefs[, "Pr(>|W|)"],
+  P_value  = 2 * pnorm(-abs(coefs[, "Estimate"] / coefs[, "Std.err"])),  # two-sided Wald; avoids P reported as 0
   row.names = NULL,
   stringsAsFactors = FALSE
 )

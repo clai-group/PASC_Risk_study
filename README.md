@@ -1,6 +1,6 @@
 # PASC Aging Study
 
-> **The age paradox in post-infectious sequelae: physiological reserve outweighs chronological age in Long COVID susceptibility**
+> **An age paradox in Long COVID where physiological reserve outweighs chronological age in susceptibility**
 
 ## Repository contents
 
@@ -16,21 +16,22 @@
 
 ## 1. System requirements
 
-**R version.** Tested on R 4.4.0 (recommended >= 4.1.0). No non-standard hardware required.
+**R version.** Tested on R 4.5.2 (recommended >= 4.1.0). No non-standard hardware required.
 
-**Operating systems tested.** macOS 13+ (Ventura), Windows 10/11, Ubuntu 22.04 LTS.
+**Operating systems tested.** macOS Sonoma 14.0.
 
 **R package dependencies**
 
 | Package | Version tested | Purpose |
 |---------|---------------|---------|
-| `geepack` | 1.3.9 | `geeglm()` generalized estimating equations |
-| `rms` | 6.7.x | `rcs()` restricted cubic splines for the Charlson index |
-| `mediation` | 4.5.x | `mediate()` causal mediation with bootstrap CIs |
+| `geepack` | 1.3.13 | `geeglm()` generalized estimating equations |
+| `rms` | 8.1-0 | `rcs()` restricted cubic splines for the Charlson index (GEE model) |
+| `mediation` | 4.5.1 | `mediate()` causal mediation with bootstrap CIs |
 | `specr` | 1.0.0 | Specification curve analysis |
-| `dplyr` | 1.1.x | Data manipulation |
-| `ggplot2` | 3.4.x | Plotting (used internally by `specr`) |
-| `stringr` | 1.5.x | String filtering on subset labels |
+| `splines` | base R | `ns()` natural spline for the Charlson index (specification curve) |
+| `dplyr` | 1.1.4 | Data manipulation |
+| `ggplot2` | 4.0.1 | Plotting (used internally by `specr`) |
+| `stringr` | 1.6.0 | String filtering on subset labels |
 
 ---
 
@@ -103,10 +104,10 @@ plot(results)
   non-reference race/ethnicity categories, vaccination, year-quarter, and the
   two severity categories).
 - `mediation_analysis.R` returns `mediation_results`, with the ACME, ADE, total
-  effect, and proportion mediated for the comorbidity and severity pathways,
+  effect (each with 95% CI and P value), and proportion mediated for the comorbidity and severity pathways,
   overall and within the <65 and >=65 age strata.
-- `specification_curve.R` produces a `specr` specification curve of the odds
-  ratio for `age_decade` across covariate and subgroup combinations, with the
+- `specification_curve.R` produces a `specr` specification curve of the log-odds
+  estimate for `age_decade` across covariate and subgroup combinations, with the
   "Other" and "Unknown" race/ethnicity subsamples excluded.
 
 ### Expected run time
@@ -146,8 +147,8 @@ specification curve are the slowest steps). Run time increases with dataset size
 | Manuscript output | Script | Object / Output |
 |-------------------|--------|-----------------|
 | Figure 1 - primary odds ratios | `gee_analysis.R` | `gee_results` |
-| Figures 3-4 - mediation decomposition | `mediation_analysis.R` | `mediation_results` |
-| Specification curve | `specification_curve.R` | `plot(results)` |
+| Figure 3, Supplementary Figs. 2-3 - mediation decomposition | `mediation_analysis.R` | `mediation_results` |
+| Figure 4 - specification curve | `specification_curve.R` | `plot(results)` |
 
 ---
 
@@ -156,7 +157,7 @@ specification curve are the slowest steps). Run time increases with dataset size
 The analysis scripts above take an analysis-ready cohort as input. The upstream
 cohort derivation (loyalty-score curation for data completeness and the
 validated PASC phenotyping algorithm) is described in the manuscript Methods and
-eMethods and follows the algorithm of Azhir et al. Because that data-processing
+Supplementary Methods and follows the algorithm of Azhir et al. Because that data-processing
 step operates on individual-level electronic health records containing protected
 health information, held under institutional and data-use-agreement restrictions,
 the cohort-construction code and the underlying data cannot be released publicly.
