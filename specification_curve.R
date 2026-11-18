@@ -1,13 +1,6 @@
 # specification_curve.R
 # Specification curve analysis of the age (per decade) -> PASC association.
 #
-# Consistent with the manuscript:
-#   - age modeled continuously per decade (the exposure), as in the primary model
-#   - adjustment covariates varied across specifications: Charlson natural spline (3 df),
-#     acute severity, vaccination status, and year-quarter
-#   - subsamples defined by sex, combined race/ethnicity, and three-level age group
-#   - the small "Other" and "Unknown" race/ethnicity subsamples are excluded
-#
 # Usage:
 #   specification_dat <- read.csv("demo_data.csv")   # or your analysis-ready data
 #   source("specification_curve.R")

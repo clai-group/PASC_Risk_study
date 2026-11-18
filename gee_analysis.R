@@ -6,12 +6,6 @@
 # Working correlation: exchangeable
 # Variance           : cluster-robust (sandwich)
 #
-# Consistent with the manuscript:
-#   - race and ethnicity modeled as a single combined variable
-#   - Charlson Comorbidity Index modeled with a restricted cubic spline
-#   - year-quarter modeled as a continuous index (single estimate)
-#   - no infection-sequence term
-#
 # Usage:
 #   study_data <- read.csv("demo_data.csv")   # or your analysis-ready data
 #   source("gee_analysis.R")
